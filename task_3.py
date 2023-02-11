@@ -6,6 +6,9 @@ import pprint
 
 class SetName:
     """Дексриптор данных для атрибутов класса GetHTMLText"""
+
+    NAMES = {'__headers': dict, '__url': str}
+
     def __set_name__(self, owner, name):
         self.name = "__" + name
 
@@ -13,32 +16,53 @@ class SetName:
         return getattr(instance, self.name)
 
     def __set__(self, instance, value):
-        if type(value) in (dict, str):
+        if self.validate(value):
             setattr(instance, self.name, value)
+        else:
+            raise ValueError('Не верный тип данных для url или headers')
+
+    def validate(self, value):
+        if type(value) == self.NAMES[self.name]:
+            return True
+        return False
 
 
 @dataclass
 class GetHTMLText:
     """Класс данных для GET запроса"""
+
     url: str = SetName()
     headers: dict = SetName()
 
 
 class MyParser(HTMLParser):
-    """Класс для подсчета тегов и их атрибутов"""
+    """Класс для подсчета тегов без атрибутов и тегов с атрибутами"""
 
     DICT_OF_TAGS = {}
+    ALL_TEGS = 0
+    ALL_TEGS_ATTR = 0
 
     def handle_starttag(self, tag, attrs):
+        self.ALL_TEGS += 1
+        if attrs:
+            self.ALL_TEGS_ATTR += 1
         self.DICT_OF_TAGS.setdefault(tag, attrs)
 
-    def show_info(self):
-        tegs = len(self.DICT_OF_TAGS)
-        tegswithattr = len([i for i in self.DICT_OF_TAGS.keys() if not self.DICT_OF_TAGS[i]])
-        print(f'Кол-во тегов: {tegs}')
-        print(f'Кол-во тегов с атрибутами: {tegswithattr}')
+    def count_unique_tegs(self):
+        return len(self.DICT_OF_TAGS)
 
-        # для вывода тегов и их атрибуты
+    def count_unique_tegs_with_attr(self):
+        return len([i for i in self.DICT_OF_TAGS.keys() if not self.DICT_OF_TAGS[i]])
+
+    def show_info(self):
+        print('Кол-во тегов на странице greenatom.ru:')
+        print()
+        print(f'Кол-во уникальных тегов: {self.count_unique_tegs()}')
+        print(f'Кол-во уникальных тегов с атрибутами: {self.count_unique_tegs_with_attr()}')
+        print(f'Кол-во всех тегов: {self.ALL_TEGS}')
+        print(f'Кол-во всех тегов с атрибутами: {self.ALL_TEGS_ATTR}')
+
+        # для вывода уникальных тегов и их атрибутов
         #pprint.pprint(self.DICT_OF_TAGS)
 
 
