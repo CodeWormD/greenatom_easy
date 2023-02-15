@@ -1,6 +1,3 @@
-# смог решить только если на вход будут поступать строки из чисел
-
-
 def newer_or_older_version(a: str, b: str) -> int:
 
     flag = 0
