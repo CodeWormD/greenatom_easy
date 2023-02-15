@@ -17,6 +17,7 @@ def newer_or_older_version(a: str, b: str) -> int:
     return flag
 
 
+
 if __name__ == '__main__':
-    newer_or_older_version("1.20", "1.2")
+    newer_or_older_version("1.10", "1.1")
 
