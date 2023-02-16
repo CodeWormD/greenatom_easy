@@ -6,7 +6,7 @@ def callback(x: int) -> int:
     """Функция для наглядности"""
     return x+x
 
-def create_handlers(callback: Callable) -> List[Callable[[int]]]:
+def create_handlers(callback: Callable[[int], int]) -> List[Callable[[int], int]]:
     handlers: List = [callback(i) for i in range(4)]
     return handlers
 
@@ -21,11 +21,11 @@ def callback2(x: int) -> int:
     """Функция для наглядности"""
     return x+x
 
-def create_handlers2(callback: Callable) -> Dict[int, Callable]:
+def create_handlers2(callback: Callable[[int], int]) -> Dict[int, Callable[[int], int]]:
     handlers: dict = {x: callback for x in range(4)}
     return handlers
 
-def execute_handlaers2(handlers: Dict[int, Callable]) -> str:
+def execute_handlaers2(handlers: Dict[int, Callable[[int], int]]) -> str:
     for key, value in handlers.items():
         return value(key)
 
